@@ -1,0 +1,102 @@
+---
+- name: Install basic applications in Arch
+  hosts: workstation
+  become: true
+
+  tasks:
+    - name: Install flatpak
+      package:
+        name: flatpak
+        state: present
+
+---
+
+- name: Install basic applications
+  hosts: homeservers
+  become: true
+
+  handlers:
+    - name: Restart ssh daemon
+      service:
+        name: ssh
+        state: restarted
+
+    - name: Restart systemd resolver
+      service:
+        name: systemd-resolved
+        state: restarted
+
+    - name: Restart networkmanager
+      service:
+        name: networkmanager
+        state: restarted
+
+  tasks:
+    - name: Install curl
+      package: name=curl state=latest
+
+    - name: Install wget
+      package: name=wget2 state=latest
+
+---
+- hosts: openstack
+  remote_user: localadmin
+  become: true
+
+  pre_tasks:
+    - name: Update apt cache if needed
+      apt: update_cache=true cache_valid_time=3600
+
+  handlers:
+    - name: restart apache
+      service: name=apache2 state=restarted
+
+  tasks:
+    - name: Ensure apache2 is up to date
+      apt: name=apache2 state=latest
+
+    - name: Write apache2 template
+      template:
+        src: /usr/share/examples/apache2_openstack.conf
+        dest: /etc/apache2/apache2.conf
+      notify: restart apache
+
+    - name: Run handlers immediately instead of at the end of the play
+      meta: flush_handlers
+
+    - name: Enable apache and make it run at boot
+      service: name=apache2 state=started enabled=true
+
+    - fail:
+
+---
+
+- hosts: homepc
+  remote_user: eternaltyro
+  become: true
+
+  tasks:
+  - name: Upgrade everything including Kernel
+    apt: update_cache=true cache_valid_time=3600 upgrade=dist
+
+---
+
+- hosts: archlaptop
+  remote_user: eternaltyro
+  become: true
+
+  tasks:
+  - name: Upgrade Everything
+    pacman: update_cache=true cache_valid_time=3600 upgrade=yes
+
+---
+
+- hosts: storage
+  remote_user: mediagoblin
+  become: true
+
+  tasks:
+  - name: Upgrade everything including Kernel
+    apt: update_cache=true upgrade=dist
+
+...  

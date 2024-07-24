@@ -1,2 +1,28 @@
 ---
 # tasks file for security
+- name: Tell SELinux about SSH's new port.
+  seport:
+    ports: "{{ ssh_port }}"
+    proto: tcp
+    setype: ssh_port_t
+    state: present
+
+- name: Make sure SSH is more secure.
+  lineinfile:
+    dest: /etc/ssh/sshd_config.d/30-custom-hardening.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+    validate: 'sshd -T -f %s'
+    mode: '0644'
+    owner: 'root'
+    group: 'root'
+  with_items:
+    - regexp: "^(#)?PasswordAuthentication"
+      line: "PasswordAuthentication no"
+    - regexp: "^(#)?PermitRootLogin"
+      line: "PermitRootLogin no"
+    - regexp: "^(#)?Port"
+      line: "Port {{ ssh_port }}"
+  notify: restart ssh
+
