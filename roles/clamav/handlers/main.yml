@@ -1,10 +1,10 @@
 ---
-- name: restart clamav
+- name: restart clamav # noqa: name[casing]
   ansible.builtin.service:
     name: clamav-daemon
     state: restarted
 
-- name: restart freshclam service
+- name: restart freshclam service # noqa: name[casing]
   ansible.builtin.service:
     name: clamav-freshclam
     state: restarted

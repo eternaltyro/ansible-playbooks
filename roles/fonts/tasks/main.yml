@@ -1,0 +1,64 @@
+---
+- name: Install libre essential typefaces.
+  ansible.builtin.package:
+    name:
+      - ttf-dejavu
+      - ttf-bitstream-vera
+      - noto-fonts
+      - noto-fonts-emoji
+      - ttf-liberation
+      - ttf-linux-libertine
+      - ttf-linux-libertine-g
+      - ttf-roboto
+      - gnu-free-fonts
+    state: latest # noqa: package-latest
+
+- name: Install other libre typefaces.
+  ansible.builtin.package:
+    name:
+      - ttf-anonymous-pro
+      - ttf-inconsolata
+      - awesome-terminal-fonts
+      - powerline-fonts
+      - tex-gyre-fonts
+      - inter-font
+      - ttf-hack
+    state: latest # noqa: package-latest
+
+- name: Install Iosevka typefaces.
+  ansible.builtin.package:
+    name:
+      - ttc-iosevka
+      - ttc-iosevka-aile
+      - ttc-iosevka-curly
+      - ttc-iosevka-slab
+      - ttf-iosevka-term
+      - ttf-iosevka-nerd
+    state: latest # noqa: package-latest
+
+- name: Install Fira typefaces.
+  ansible.builtin.package:
+    name:
+      - otf-fira-mono
+      - otf-fira-sans
+    state: latest # noqa: package-latest
+
+- name: Install Adobe Source Family typefaces.
+  ansible.builtin.package:
+    name:
+      - adobe-source-code-pro-fonts
+      - adobe-source-sans-pro-fonts
+      - adobe-source-serif-pro-fonts
+    state: latest # noqa: package-latest
+
+# - name: Install fonts via AUR
+#   community.general.pacman:
+#     name:
+#       - otf-fira-code-mozilla
+#       - otf-fira-code-symbol
+#       - otf-openmoji
+#     state: latest # noqa: package-latest
+#     executable: "/usr/bin/yay"
+#   tags:
+#     - fonts
+#     - aur

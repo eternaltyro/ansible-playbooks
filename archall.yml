@@ -61,12 +61,12 @@
 
   handlers:
 
-    - name: restart tailscale
+    - name: restart tailscale # noqa: name[casing]
       ansible.builtin.service:
         name: tailscaled
         state: restarted
 
-    - name: restart firewall
+    - name: restart firewall # noqa: name[casing]
       ansible.builtin.service:
         name: ufw
         state: restarted
@@ -74,6 +74,7 @@
   roles:
     - DevOps-setup
     - clamav
+    - fonts
   #  - ldap-integration
 
   tasks:
@@ -89,7 +90,7 @@
         name:
           - btrfs-progs
           - xfsprogs
-        state: latest
+        state: latest # noqa: package-latest
       tags: production
 
     - name: Install extra fsutils.
@@ -103,7 +104,7 @@
     - name: Install flatpak runtime.
       ansible.builtin.package:
         name: flatpak
-        state: latest
+        state: latest # noqa: package-latest
       tags: production
 
     - name: Add the flathub flatpak repository remote.
@@ -125,7 +126,7 @@
           - arch-audit
           - rkhunter
           - lynis
-        state: latest
+        state: latest # noqa: package-latest
       tags:
         - security
         - production
@@ -133,19 +134,19 @@
     - name: Install Netfilter userspace tools.
       ansible.builtin.package:
         name: nftables
-        state: latest
+        state: latest # noqa: package-latest
       tags: production
 
     - name: Install Firewall daemon.
       ansible.builtin.package:
         name: firewalld
-        state: latest
+        state: latest # noqa: package-latest
       tags: [production, never]
 
     - name: Install firewall frontend.
       ansible.builtin.package:
         name: ufw
-        state: latest
+        state: latest # noqa: package-latest
       notify: restart firewall
       tags: production
 
@@ -154,7 +155,7 @@
         name:
           - vim
           - vim-runtime
-        state: latest
+        state: latest # noqa: package-latest
       tags: production
 
     - name: Install system customisations.
@@ -164,19 +165,19 @@
           - tmux
           - vim-airline
           - vim-airline-themes
-        state: latest
+        state: latest # noqa: package-latest
       tags: production
 
     - name: Install fwupd utility.
       ansible.builtin.package:
         name: fwupd
-        state: latest
+        state: latest # noqa: package-latest
       tags: production
 
     - name: Install Borg backup utility.
       ansible.builtin.package:
         name: borg
-        state: latest
+        state: latest # noqa: package-latest
 
     - name: Install essential apps via flatpak.
       become: false
@@ -216,7 +217,7 @@
     - name: Install speech dispatcher for Firefox.
       ansible.builtin.package:
         name: speech-dispatcher
-        state: latest
+        state: latest # noqa: package-latest
 
     - name: Install optional apps via flatpak.
       become: false
@@ -283,7 +284,7 @@
           - libva-intel-driver
           - intel-media-driver
           - intel-gpu-tools # --> for intel_gpu_top
-        state: latest
+        state: latest # noqa: package-latest
 
     - name: Setup modern audio drivers (pipewire).
       ansible.builtin.package:
@@ -295,7 +296,7 @@
           - pipewire-jack
           - wireplumber
           - libwireplumber
-        state: latest
+        state: latest # noqa: package-latest
 
     # moc package deprecated
     - name: Setup Multimedia players.
@@ -304,7 +305,7 @@
           - mpd
           - mpc
           - vlc
-        state: latest
+        state: latest # noqa: package-latest
       tags: never
 
     - name: Libreoffice language tools (thesaurus, spell check, hypen rules).
@@ -319,50 +320,6 @@
           - mythes-en
         state: present
       tags: never
-
-    # - name: Install fonts via AUR
-    #   community.general.pacman:
-    #     name:
-    #       - otf-fira-code-mozilla
-    #       - otf-fira-code-symbol
-    #       - otf-openmoji
-    #     state: present
-    #     executable: "/usr/bin/yay"
-    #   tags:
-    #     - fonts
-    #     - aur
-
-    - name: Install fonts.
-      ansible.builtin.package:
-        name:
-          - otf-fira-mono
-          - otf-fira-sans
-          - ttf-dejavu
-          - ttf-bitstream-vera
-          - noto-fonts-emoji
-          - ttf-liberation
-          - ttf-anonymous-pro
-          - ttf-inconsolata
-          - ttf-linux-libertine
-          - ttf-linux-libertine-g
-          - adobe-source-code-pro-fonts
-          - adobe-source-sans-pro-fonts
-          - adobe-source-serif-pro-fonts
-          - noto-fonts
-          - ttf-roboto
-          - awesome-terminal-fonts
-          - powerline-fonts
-          - tex-gyre-fonts
-          - inter-font
-          - ttc-iosevka
-          - ttf-iosevka-term
-          - ttf-iosevka-nerd
-          - ttf-hack
-          - gnu-free-fonts
-        state: latest
-      tags:
-        - fonts
-        - production
 
     # deny = ignore
     # reject = inform
@@ -443,7 +400,7 @@
           - xorg-server
           - xorg-xinit
           - xf86-input-libinput
-        state: latest
+        state: latest # noqa: package-latest
       tags:
         - deprecated
         - never
@@ -456,7 +413,7 @@
           - slim
           - slim-themes
           - vicious
-        state: latest
+        state: latest # noqa: package-latest
       tags:
         - deprecated
         - never
