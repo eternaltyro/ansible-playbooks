@@ -59,6 +59,9 @@
   hosts: workstation
   become: true
 
+  vars_files:
+    - vars/vars.yml
+
   handlers:
 
     - name: restart tailscale # noqa: name[casing]
@@ -100,6 +103,34 @@
           - exfatprogs
         state: present
       tags: never
+
+    - name: Install KDE suite tools.
+      ansible.builtin.package:
+        name:
+          - akonadi
+          - libakonadi
+          - akonadi-contacts
+          - akonadi-calendar
+          - merkuro
+          - akonadi-mime
+        state: latest # noqa: package-latest
+
+    - name: Configure Akonadi user config
+      ansible.builtin.file:
+        path: '/home/{{ username }}/.config/akonadi'
+        state: directory
+        mode: '0755'
+        owner: '{{ username }}'
+        group: '{{ groupname }}'
+
+    - name: Configure Akonadi to use SQLITE.
+      ansible.builtin.template:
+        src: 'templates/akonadiserverrc.j2'
+        dest: '/home/{{ username }}/.config/akonadi/akonadiserverrc'
+        mode: '0600'
+        owner: '{{ username }}'
+        group: '{{ groupname }}'
+#        validate: 'akonadictl start' # TODO: Fix - Akonadictl always exits gracefully with exit code 0.
 
     - name: Install flatpak runtime.
       ansible.builtin.package:
@@ -321,6 +352,7 @@
         state: present
       tags: never
 
+    # TODO: Use profiles to enable custom apps
     # deny = ignore
     # reject = inform
     - name: Configure UFW default firewall rules.
