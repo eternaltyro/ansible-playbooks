@@ -1,2 +1,3 @@
 ---
 # defaults file for security
+security_preferred_firewall_program: ufw # Or firewalld

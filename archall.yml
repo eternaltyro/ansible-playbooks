@@ -69,15 +69,11 @@
         name: tailscaled
         state: restarted
 
-    - name: restart firewall # noqa: name[casing]
-      ansible.builtin.service:
-        name: ufw
-        state: restarted
-
   roles:
     - DevOps-setup
     - clamav
     - fonts
+    - security
   #  - ldap-integration
 
   tasks:
@@ -124,9 +120,12 @@
         group: '{{ groupname }}'
 
     - name: Configure Akonadi to use SQLITE.
-      ansible.builtin.template:
-        src: 'templates/akonadiserverrc.j2'
-        dest: '/home/{{ username }}/.config/akonadi/akonadiserverrc'
+      ansible.builtin.lineinfile:
+        firstmatch: true
+        insertafter: '[%General]'
+        regexp: '^Driver='
+        line: 'Driver=QSQLITE'
+        path: '/home/{{ username }}/.config/akonadi/akonadiserverrc'
         mode: '0600'
         owner: '{{ username }}'
         group: '{{ groupname }}'
@@ -166,19 +165,6 @@
       ansible.builtin.package:
         name: nftables
         state: latest # noqa: package-latest
-      tags: production
-
-    - name: Install Firewall daemon.
-      ansible.builtin.package:
-        name: firewalld
-        state: latest # noqa: package-latest
-      tags: [production, never]
-
-    - name: Install firewall frontend.
-      ansible.builtin.package:
-        name: ufw
-        state: latest # noqa: package-latest
-      notify: restart firewall
       tags: production
 
     - name: Install VIM and friends.
@@ -351,76 +337,6 @@
           - mythes-en
         state: present
       tags: never
-
-    # TODO: Use profiles to enable custom apps
-    # deny = ignore
-    # reject = inform
-    - name: Configure UFW default firewall rules.
-      community.general.ufw:
-        state: enabled
-        policy: reject
-        logging: 'on'
-        # delete: true
-      tags:
-        - security
-        - firewall
-
-    - name: Rate limit SSH attempts.
-      community.general.ufw:
-        comment: Rate limit SSH attempts
-        rule: limit
-        port: ssh
-        proto: tcp
-        log: true
-      notify: restart firewall
-      tags:
-        - security
-        - firewall
-
-    - name: Allow Jellyfin service.
-      community.general.ufw:
-        comment: Jellyfin access
-        rule: allow
-        port: '8096'
-        proto: tcp
-        src: '{{ item }}'
-      with_items:
-        - 192.168.1.0/24
-        - fe80::/64
-      notify: restart firewall
-      tags:
-        - security
-        - firewall
-
-    - name: Allow Jellyfin service auto-discovery.
-      community.general.ufw:
-        comment: Jellyfin service discovery
-        rule: allow
-        port: '1900'
-        proto: udp
-        src: '{{ item }}'
-      with_items:
-        - 192.168.1.0/24
-        - fe80::/64
-      notify: restart firewall
-      tags:
-        - security
-        - firewall
-
-    - name: Allow Jellyfin service auto-discovery.
-      community.general.ufw:
-        comment: Jellyfin service discovery
-        rule: allow
-        port: '7359'
-        proto: udp
-        src: '{{ item }}'
-      with_items:
-        - 192.168.1.0/24
-        - fe80::/64
-      notify: restart firewall
-      tags:
-        - security
-        - firewall
 
     # Switched to Wayland
     - name: Install X essentials (legacy).

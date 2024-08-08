@@ -1,0 +1,49 @@
+---
+- name: Install Uncomplicated Firewall frontend.
+  ansible.builtin.package:
+    name: ufw
+    state: latest # noqa: package-latest
+  notify: restart ufw
+
+# Provides  cups, dropbox, kdeconnect, llmnr, hplip, lxd, mdns,
+# megasync, mosh, mpd, samba, scream, synergy, tailscale.
+- name: Install Uncomplicated Firewall extra profiles.
+  ansible.builtin.package:
+    name: ufw-extras
+    state: latest # noqa: package-latest
+  notify: restart ufw
+
+- name: Configure UFW profile for Jellyfin.
+  ansible.builtin.template:
+    src: templates/ufw-jellyfin.j2
+    dest: /etc/ufw/applications.d/ufw-jellyfin
+    owner: root
+    group: root
+    mode: '0644'
+#    validate: /usr/bin/ufw app info Jellyfin
+  notify: restart ufw
+
+- ansible.builtin.meta: flush_handlers # noqa: name[missing]
+
+# deny = ignore
+# reject = inform
+- name: Configure UFW default firewall rule.
+  community.general.ufw:
+    state: enabled
+    policy: reject
+    logging: 'on'
+#    delete: true
+
+- community.general.ufw: # noqa: name[missing]
+    comment: Rate limit SSH attempts
+    rule: limit
+    port: ssh
+    proto: tcp
+    log: true
+
+- community.general.ufw: # noqa: name[missing]
+    comment: Jellyfin access
+    rule: allow
+    name: Jellyfin
+    src: '{{ item }}'
+  with_items: '{{ security_local_networks }}'
