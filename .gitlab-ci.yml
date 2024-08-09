@@ -1,8 +1,12 @@
 ---
 image: python:latest
 
+# enum(.pre, build, test, deploy, .post)
+stages:
+  - test
+
 linting-job:
-  stage: linting
+  stage: test
   before_script:
     - pip install ansible-dev-tools
   script:
