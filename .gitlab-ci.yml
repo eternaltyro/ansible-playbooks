@@ -1,10 +1,9 @@
 ---
-image: geerlingguy/docker-debian12-ansible:latest
+image: python:latest
 
 linting-job:
-  stage: test
+  stage: linting
   before_script:
-    - apt-get update
-    - apt-get -y install ansible-lint
+    - pip install ansible-dev-tools
   script:
     - ansible-lint archall.yml
