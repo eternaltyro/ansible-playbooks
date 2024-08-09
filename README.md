@@ -1,5 +1,13 @@
 # Running
 
+- Install missing collections
+
+```
+$ ansible-galaxy collection install ansible.posix
+```
+
+- Run the playbook
+
 ```
 ansible-playbook --ask-become-pass --check --tags onetime \
   --inventory inventory.ini archall.yml
@@ -17,6 +25,17 @@ If we want the handlers to run immediately after a task, we can use the
 ## Deliberately failing
 
 add `- fail:` task
+
+# Testing
+
+## Linting
+
+- Ansible lint using `ansible-lint archall.yml`
+- Add in-line exceptions using `# noqa: <warning>`
+
+## Unit testing
+
+- TBD
 
 ## TODO:
 

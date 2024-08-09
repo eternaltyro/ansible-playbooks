@@ -13,14 +13,48 @@
     state: latest # noqa: package-latest
   notify: restart ufw
 
-- name: Configure UFW profile for Jellyfin.
+# TODO: Find ways to validate
+- name: Ensure UFW profile for Jellyfin exists.
   ansible.builtin.template:
     src: templates/ufw-jellyfin.j2
     dest: /etc/ufw/applications.d/ufw-jellyfin
     owner: root
     group: root
     mode: '0644'
-#    validate: /usr/bin/ufw app info Jellyfin
+    backup: true
+  notify: restart ufw
+
+# TODO: Find ways to validate
+- name: Ensure UFW profile for KDE Connect exists.
+  ansible.builtin.template:
+    src: templates/ufw-kdeconnect.j2
+    dest: /etc/ufw/applications.d/ufw-kdeconnect
+    owner: root
+    group: root
+    mode: '0644'
+    backup: true
+  notify: restart ufw
+
+# TODO: Find ways to validate
+- name: Ensure UFW profile for Samba exists.
+  ansible.builtin.template:
+    src: templates/ufw-samba.j2
+    dest: /etc/ufw/applications.d/ufw-samba
+    owner: root
+    group: root
+    mode: '0644'
+    backup: true
+  notify: restart ufw
+
+# TODO: Find ways to validate
+- name: Ensure UFW profile for Tailscale exists.
+  ansible.builtin.template:
+    src: templates/ufw-tailscale.j2
+    dest: /etc/ufw/applications.d/ufw-tailscale
+    owner: root
+    group: root
+    mode: '0644'
+    backup: true
   notify: restart ufw
 
 - ansible.builtin.meta: flush_handlers # noqa: name[missing]
@@ -47,3 +81,23 @@
     name: Jellyfin
     src: '{{ item }}'
   with_items: '{{ security_local_networks }}'
+
+- community.general.ufw: # noqa: name[missing]
+    comment: KDE Connect access
+    rule: allow
+    name: 'KDE Connect'
+    src: '{{ item }}'
+  with_items: '{{ security_local_networks }}'
+
+- community.general.ufw: # noqa: name[missing]
+    comment: Samba shares
+    rule: allow
+    name: Samba
+    src: '{{ item }}'
+  with_items: '{{ security_local_networks }}'
+
+- community.general.ufw: # noqa: name[missing]
+    comment: Tailscale funnel
+    rule: allow
+    name: tailscale
+...
