@@ -9,12 +9,14 @@ stages:
 ansible:setup:
   stage: .pre
   script:
-    - pip install --user ansible
-    - pip install --user ansible-dev-tools
+    - pip install --root-user-action=ignore --user ansible
+    - pip install --root-user-action=ignore --user ansible-dev-tools
 
 ansible:collection-install:
   stage: .pre
   needs: ["ansible:setup"]
+  before_script:
+    - export PATH="/root/.local/bin:$PATH"
   script:
     - ansible-galaxy collection install community.general
     - ansible-galaxy collection install ansible.posix
@@ -24,3 +26,4 @@ lint-code:
   needs: ["ansible:setup", "ansible:collection-install"]
   script:
     - ansible-lint archall.yml
+    
