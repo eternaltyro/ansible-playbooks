@@ -1,18 +1,4 @@
 # This file contains ignores rule violations for ansible-lint
 directory_integration/directory_integration.yaml load-failure[runtimeerror]
-directory_integration/tasks/debian.yaml yaml[brackets]
-directory_integration/tasks/debian.yaml yaml[octal-values]
 firewalld_info.yml load-failure[runtimeerror]
-package_info.yml name[play]
-package_info.yml yaml[truthy]
-playbook.yml internal-error
-playbook.yml yaml[indentation]
 postgres_user_management.yml yaml[key-duplicates]
-postgres_user_management.yml yaml[truthy]
-roles/DevOps-setup/tests/test.yml name[play]
-roles/clamav/tests/test.yml name[play]
-roles/security/tests/test.yml name[play]
-security_scans.yml name[play]
-security_scans.yml no-changed-when
-security_scans.yml yaml[truthy]
-user_sshkey_management.yml yaml[truthy]
