@@ -3,7 +3,7 @@ image: geerlingguy/docker-debian12-ansible:latest
 
 linting-job:
   stage: test
-  before-script:
+  before_script:
     - apt-get update
     - apt-get -y install ansible-lint
   script:
