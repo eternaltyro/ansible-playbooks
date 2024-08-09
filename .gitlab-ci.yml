@@ -3,11 +3,11 @@ image: python:latest
 
 # enum(.pre, build, test, deploy, .post)
 stages:
-  - .pre
+  - setup
   - test
 
 ansible:setup:
-  stage: .pre
+  stage: setup
   script:
     - pip install --root-user-action=ignore ansible
     - pip install --root-user-action=ignore ansible-dev-tools
@@ -19,10 +19,11 @@ ansible:setup:
     - which ansible
 
 ansible:collection-install:
-  stage: .pre
+  stage: setup
   needs: ["ansible:setup"]
   before_script:
     - echo $PATH
+    - ls /usr/local/bin/ansible*
   script:
     - ansible-galaxy collection install community.general
     - ansible-galaxy collection install ansible.posix
