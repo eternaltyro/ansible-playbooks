@@ -6,19 +6,21 @@ stages:
   - .pre
   - test
 
-setup-ansible:
+ansible:setup:
   stage: .pre
   script:
     - pip install --user ansible
     - pip install --user ansible-dev-tools
 
-install-collections:
+ansible:collection-install:
   stage: .pre
+  needs: ["ansible:setup"]
   script:
     - ansible-galaxy collection install community.general
     - ansible-galaxy collection install ansible.posix
 
 lint-code:
   stage: test
+  needs: ["ansible:setup", "ansible:collection-install"]
   script:
     - ansible-lint archall.yml
