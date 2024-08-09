@@ -11,6 +11,17 @@ ansible:setup:
   script:
     - pip install --root-user-action=ignore ansible
     - pip install --root-user-action=ignore ansible-dev-tools
+    - pip show ansible
+  after_script:
+    - echo "$PATH"
+    - echo "$PWD"
+    - echo "$HOME"
+    - whoami
+    - who
+    - ansible-lint --version
+    - which ansible
+    - which ansible-lint
+    - which ansible-galaxy
 
 ansible:collection-install:
   stage: .pre
