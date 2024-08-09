@@ -11,26 +11,32 @@ ansible:setup:
   script:
     - pip install --root-user-action=ignore ansible
     - pip install --root-user-action=ignore ansible-dev-tools
-    - pip show ansible
-  after_script:
-    - echo "$PATH"
-    - echo "$PWD"
-    - ansible-lint --version
-    - which ansible
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - /usr/local/bin/
+      - /usr/local/lib/
 
 ansible:collection-install:
   stage: setup
   needs: ["ansible:setup"]
-  before_script:
-    - echo $PATH
-    - ls /usr/local/bin/ansible*
   script:
     - ansible-galaxy collection install community.general
     - ansible-galaxy collection install ansible.posix
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - /usr/local/bin/
+      - /usr/local/lib/
 
 lint-code:
   stage: test
   needs: ["ansible:setup", "ansible:collection-install"]
   script:
     - ansible-lint archall.yml
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - /usr/local/bin/
+      - /usr/local/lib/
     
