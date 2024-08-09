@@ -1,42 +1,11 @@
 ---
 image: python:latest
 
-# enum(.pre, build, test, deploy, .post)
-stages:
-  - setup
-  - test
-
-ansible:setup:
-  stage: setup
-  script:
+ansible:lint:
+  before_script:
     - pip install --root-user-action=ignore ansible
     - pip install --root-user-action=ignore ansible-dev-tools
-  cache:
-    key: "$CI_COMMIT_REF_SLUG"
-    paths:
-      - /usr/local/bin/
-      - /usr/local/lib/
-
-ansible:collection-install:
-  stage: setup
-  needs: ["ansible:setup"]
-  script:
     - ansible-galaxy collection install community.general
     - ansible-galaxy collection install ansible.posix
-  cache:
-    key: "$CI_COMMIT_REF_SLUG"
-    paths:
-      - /usr/local/bin/
-      - /usr/local/lib/
-
-lint-code:
-  stage: test
-  needs: ["ansible:setup", "ansible:collection-install"]
   script:
     - ansible-lint archall.yml
-  cache:
-    key: "$CI_COMMIT_REF_SLUG"
-    paths:
-      - /usr/local/bin/
-      - /usr/local/lib/
-    

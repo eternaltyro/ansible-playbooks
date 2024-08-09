@@ -11,8 +11,6 @@ postgres_user_management.yml yaml[key-duplicates]
 postgres_user_management.yml yaml[truthy]
 roles/DevOps-setup/tests/test.yml name[play]
 roles/clamav/tests/test.yml name[play]
-roles/security/meta/main.yml meta-incorrect
-roles/security/meta/main.yml schema[meta]
 roles/security/tests/test.yml name[play]
 security_scans.yml name[play]
 security_scans.yml no-changed-when
