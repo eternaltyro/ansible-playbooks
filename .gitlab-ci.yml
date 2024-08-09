@@ -15,19 +15,14 @@ ansible:setup:
   after_script:
     - echo "$PATH"
     - echo "$PWD"
-    - echo "$HOME"
-    - whoami
-    - who
     - ansible-lint --version
     - which ansible
-    - which ansible-lint
-    - which ansible-galaxy
 
 ansible:collection-install:
   stage: .pre
   needs: ["ansible:setup"]
   before_script:
-    - export PATH="/root/.local/bin:$PATH"
+    - echo $PATH
   script:
     - ansible-galaxy collection install community.general
     - ansible-galaxy collection install ansible.posix
