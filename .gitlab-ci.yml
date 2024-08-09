@@ -3,11 +3,22 @@ image: python:latest
 
 # enum(.pre, build, test, deploy, .post)
 stages:
+  - .pre
   - test
 
-linting-job:
+setup-ansible:
+  stage: .pre
+  script:
+    - pip install --user ansible
+    - pip install --user ansible-dev-tools
+
+install-collections:
+  stage: .pre
+  script:
+    - ansible-galaxy collection install community.general
+    - ansible-galaxy collection install ansible.posix
+
+lint-code:
   stage: test
-  before_script:
-    - pip install ansible-dev-tools
   script:
     - ansible-lint archall.yml
