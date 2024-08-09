@@ -40,6 +40,7 @@
 - ansible.posix.firewalld: # noqa: name[missing]
     source: 192.0.2.0/24
     zone: internal
+    permanent: false
     state: enabled
 
 - ansible.posix.firewalld: # noqa: name[missing]
