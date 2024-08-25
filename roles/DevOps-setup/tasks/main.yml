@@ -46,6 +46,7 @@
       - containers-common
       - fuse-overlayfs
       - slirp4netns
+      - netavark
     state: latest
 
 - name: Install infrastructure automation tools.

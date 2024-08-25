@@ -98,7 +98,6 @@
           - f2fs-tools
           - exfatprogs
         state: present
-      tags: never
 
     - name: Install KDE suite tools.
       ansible.builtin.package:
@@ -195,6 +194,27 @@
       ansible.builtin.package:
         name: borg
         state: latest # noqa: package-latest
+
+    - name: Install Bitwarden desktop app.
+      ansible.builtin.package:
+        name: bitwarden
+        state: latest # noqa: package-latest
+
+    - name: Install Tailscale daemon.
+      ansible.builtin.package:
+        name: tailscale
+        state: latest # noqa: package-latest
+
+    - name: Install Signal Desktop app.
+      ansible.builtin.package:
+        name: signal-desktop
+        state: latest # noqa: package-latest
+
+    - name: Install Firefox from package manager.
+      ansible.builtin.package:
+        name: firefox
+        state: latest # noqa: package-latest
+      tags: never
 
     - name: Install essential apps via flatpak.
       become: false
