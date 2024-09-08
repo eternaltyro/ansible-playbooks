@@ -1,6 +1,13 @@
 ---
+- name: Install language runtimes and compilers.
+  ansible.builtin.package:
+    name:
+      - go
+      - nodejs
+    state: latest # noqa: package-latest
+
 - name: Install development essentials.
-  ansible.legacy.package:
+  ansible.builtin.package:
     name:
       - git
       - git-filter-repo
@@ -8,16 +15,16 @@
       - cosign
       - ruff
       - uv
-    state: latest
+    state: latest # noqa: package-latest
 
 - name: Install other development utilities.
-  ansible.legacy.package:
+  ansible.builtin.package:
     name:
       - toolbox
-    state: latest
+    state: latest # noqa: package-latest
 
 - name: Install virtualisation tools.
-  ansible.legacy.package:
+  ansible.builtin.package:
     name:
       - libvirt
       - libvirt-python
@@ -29,14 +36,14 @@
       - virtualbox-guest-iso
       - virtualbox-guest-utils
       - virtualbox-host-modules-arch
-    state: latest
+    state: latest # noqa: package-latest
 
 # slirp4ns and fuse-overlayfs are needed for rootless podman
 # To set subuid / subgid for user namespaces inside container:
 # sudo usermod --add-subuids 100000-165535 \
 #              --add-subgids 100000-165535 <username>
 - name: Install containerisation tools.
-  ansible.legacy.package:
+  ansible.builtin.package:
     name:
       - podman
       - podman-compose
@@ -47,18 +54,37 @@
       - fuse-overlayfs
       - slirp4netns
       - netavark
-    state: latest
+    state: latest # noqa: package-latest
 
 - name: Install infrastructure automation tools.
-  ansible.legacy.package:
+  ansible.builtin.package:
     name:
       - opentofu
       - terraform
-    state: latest
+    state: latest # noqa: package-latest
 
-- name: Install terragrunt terraform wrapper
-  ansible.legacy.package:
+- name: Install terragrunt terraform wrapper.
+  ansible.builtin.package:
     name:
       - terragrunt
-    state: latest
+    state: latest # noqa: package-latest
   tags: [never, terragrunt]
+
+- name: Install nix package manager.
+  ansible.builtin.package:
+    name:
+      - nix
+    state: latest # noqa: package-latest
+  notify: enable nix daemon
+
+- name: Configure nix experimental features.
+  ansible.builtin.lineinfile:
+    dest: /etc/nix/nix.conf
+    regexp: "^(#)?extra-experimental-features"
+    line: "extra-experimental-features = flakes command"
+    state: present
+    # validate: 'TBD'
+    mode: '0644'
+    owner: 'root'
+    group: 'root'
+  notify: restart nix daemon

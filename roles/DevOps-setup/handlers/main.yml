@@ -1,2 +1,11 @@
 ---
 # handlers file for DevOps-setup
+- name: enable nix daemon # noqa: name[casing]
+  ansible.builtin.service:
+    name: nix-daemon
+    enabled: true
+
+- name: restart nix daemon # noqa: name[casing]
+  ansible.builtin.service:
+    name: nix-daemon
+    state: restarted
