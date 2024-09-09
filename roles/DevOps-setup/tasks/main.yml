@@ -81,7 +81,7 @@
   ansible.builtin.lineinfile:
     dest: /etc/nix/nix.conf
     regexp: "^(#)?extra-experimental-features"
-    line: "extra-experimental-features = flakes command"
+    line: "extra-experimental-features = flakes nix-command"
     state: present
     # validate: 'TBD'
     mode: '0644'
