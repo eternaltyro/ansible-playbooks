@@ -32,6 +32,7 @@
       - virt-manager
       - qemu-base
       - qemu-system-x86
+      - qemu-desktop
       - virtualbox
       - virtualbox-guest-iso
       - virtualbox-guest-utils
@@ -70,6 +71,13 @@
     state: latest # noqa: package-latest
   tags: [never, terragrunt]
 
+- name: Install Kubernetes client tools.
+  ansible.builtin.package:
+    name:
+      - kubectl
+      - helm
+    state: latest # noqa: package-latest
+
 - name: Install nix package manager.
   ansible.builtin.package:
     name:
@@ -88,3 +96,53 @@
     owner: 'root'
     group: 'root'
   notify: restart nix daemon
+
+- name: Configure git signing (sub)key.
+  community.general.git_config:
+    name: user.signingkey
+    value: "BE025865EB94267F!"
+    scope: global
+    state: present
+
+- name: Configure git tag signing.
+  community.general.git_config:
+    name: tag.gpgsign
+    value: true
+    scope: global
+    state: present
+
+- name: Configure git commit signing.
+  community.general.git_config:
+    name: commit.gpgsign
+    value: true
+    scope: global
+    state: present
+
+- name: Configure git default editor.
+  community.general.git_config:
+    name: core.editor
+    value: vim
+    scope: global
+    state: present
+
+- name: Configure git aliases.
+  community.general.git_config:
+    name: alias.{{ item.alias }}
+    value: "{{ item.value }}"
+    scope: global
+    state: present
+  with_items:
+    - alias: aliases
+      value: config --get-regexp '^alias\.'
+    - alias: br
+      value: branch
+    - alias: co
+      value: checkout
+    - alias: cm
+      value: commit
+    - alias: diffc
+      value: diff --cached
+    - alias: st
+      value: status
+    - alias: lg
+      value: log --oneline --graph --all
