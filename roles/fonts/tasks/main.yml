@@ -13,6 +13,21 @@
       - gnu-free-fonts
     state: latest # noqa: package-latest
 
+- name: Install libre (mostly) monospaced nerd fonts.
+  ansible.builtin.package:
+    name:
+      - otf-codenewroman-nerd
+      - otf-droid-nerd
+      - otf-firamono-nerd
+      - ttf-0xproto-nerd
+      - ttf-anonymouspro-nerd
+      - ttf-firacode-nerd
+      - ttf-inconsolata-go-nerd
+      - ttf-inconsolata-lgc-nerd
+      - ttf-inconsolata-nerd
+      - ttf-liberation-mono-nerd
+    state: latest # noqa: package-latest
+
 - name: Install other libre typefaces.
   ansible.builtin.package:
     name:

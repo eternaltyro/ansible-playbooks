@@ -3,7 +3,12 @@
   ansible.builtin.package:
     name:
       - go
+      - gopls         # Provides Go LSP
+      - rustup
+      - rust-analyzer # Provides Rust LSP
       - nodejs
+#      - elixir
+      - python-lsp-server # Python LSP
     state: latest # noqa: package-latest
 
 - name: Install development essentials.
@@ -15,6 +20,8 @@
       - cosign
       - ruff
       - uv
+      - neovim
+      - neovim-lspconfig
     state: latest # noqa: package-latest
 
 - name: Install other development utilities.
