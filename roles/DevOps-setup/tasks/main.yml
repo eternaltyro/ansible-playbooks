@@ -1,4 +1,8 @@
 ---
+- name: Refresh package cache from repository
+  community.general.pacman:
+    update_cache: true
+
 - name: Install language runtimes and compilers.
   ansible.builtin.package:
     name:
